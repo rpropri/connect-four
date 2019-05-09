@@ -1,11 +1,15 @@
-.column {
-  float: left
-}
-
 body {
   background-color: rgb(196, 222, 255)
 }
-
+h1 {
+  text-align: center
+}
+#app {
+  text-align: center
+}
+.column {
+  float: left
+}
 .box {
   width: 100px;
   height: 100px;
