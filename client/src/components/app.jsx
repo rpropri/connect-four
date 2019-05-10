@@ -1,10 +1,12 @@
 import Board from './board.jsx';
+import Message from './message.jsx';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       player1: true,
+      winner: '',
       currentPlays: {
         0: [],
         1: [],
@@ -20,7 +22,10 @@ class App extends React.Component {
   }
   render() {
     return (
-      <Board playPiece={this.playPiece} columns={this.state.currentPlays}/>
+      <div>
+        <Message winner={this.state.winner}/>
+        <Board playPiece={this.playPiece} columns={this.state.currentPlays}/>
+      </div>
     )
   }
   playPiece(e) {
@@ -28,7 +33,7 @@ class App extends React.Component {
     const playsArray = Object.create(this.state.currentPlays);
     const player1 = this.state.player1;
     playsArray[column].push(player1 ? 'X' : 'O');
-    this.setState({currentPlays: playsArray, player1: !player1});
+    this.setState( {currentPlays: playsArray, player1: !player1} );
     this.checkForWin(player1, column);
   }
   checkForWin(player1, column) {
@@ -44,24 +49,25 @@ class App extends React.Component {
         pieceCount = 0;
       }
       if (pieceCount >= 4) {
-        alert(`Player ${piece} wins!`);
+        this.setState( {winner: piece} );
       }
     }
     //check rows
     pieceCount = 0;
     const row = playsArray[column].length - 1;
-    console.log('row', row);
     for (let j = 0; j < 7; j++) {
-      console.log(j, playsArray[column][row], pieceCount);
       if (playsArray[j][row] && playsArray[j][row] === piece) {
         pieceCount++;
       } else {
         pieceCount = 0;
       }
       if (pieceCount >= 4) {
-        alert(`Player ${piece} wins!`);
+        this.setState({ winner: piece });
       }
     }
+    //check major diags
+    pieceCount = 0;
+    
   }
 };
 
