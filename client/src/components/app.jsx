@@ -29,21 +29,23 @@ class App extends React.Component {
     )
   }
   playPiece(e) {
-    const column = e.target.attributes.x.value;
-    const playsArray = Object.create(this.state.currentPlays);
-    const player1 = this.state.player1;
-    playsArray[column].push(player1 ? 'X' : 'O');
-    this.setState( {currentPlays: playsArray, player1: !player1} );
-    this.checkForWin(player1, column);
+    if (this.state.winner === '') {
+      const column = e.target.attributes.x.value;
+      const playsObj = Object.create(this.state.currentPlays);
+      const player1 = this.state.player1;
+      playsObj[column].push(player1 ? 'X' : 'O');
+      this.setState( {currentPlays: playsObj, player1: !player1} );
+      this.checkForWin(player1, column);
+    }
   }
   checkForWin(player1, column) {
     const piece = player1 ? 'X': 'O';
     let pieceCount;
-    const playsArray = Object.create(this.state.currentPlays);
+    const playsObj = Object.create(this.state.currentPlays);
     //check columns
     pieceCount = 0;
-    for (let i = 0; i < playsArray[column].length; i++) {
-      if (playsArray[column][i] === piece) {
+    for (let i = 0; i < playsObj[column].length; i++) {
+      if (playsObj[column][i] === piece) {
         pieceCount++
       } else {
         pieceCount = 0;
@@ -54,20 +56,72 @@ class App extends React.Component {
     }
     //check rows
     pieceCount = 0;
-    const row = playsArray[column].length - 1;
+    const row = playsObj[column].length - 1;
     for (let j = 0; j < 7; j++) {
-      if (playsArray[j][row] && playsArray[j][row] === piece) {
+      if (playsObj[j][row] === piece) {
         pieceCount++;
       } else {
         pieceCount = 0;
       }
       if (pieceCount >= 4) {
-        this.setState({ winner: piece });
+        this.setState( { winner: piece } );
       }
     }
-    //check major diags
+    //check diags
     pieceCount = 0;
-    
+    let level;
+    let steps;
+    for (let k = 0; k < 7; k++) {
+      // if this column has at least length 4
+      if (playsObj[k].length >= 4) {
+        console.log('found the top piece in col ', k)
+        // check diags down from each piece at 4th slot (n=3) and above
+        for (let n = 3; n < playsObj[k].length; n++) {
+          console.log('checking level ', n, playsObj[k][n]);
+          if (playsObj[k][n] === piece) {
+            // if top piece is at least 4 columns from left...
+            if (k >= 3) {
+              pieceCount = 1;
+              level = n;
+              steps = 0;
+              // check leftward
+              while (level > 0) {
+                level--;
+                steps++;
+                console.log('level, steps, pieceCount', level, steps, pieceCount);
+                if (playsObj[k-steps][level] === piece) {
+                  pieceCount++;
+                } else {
+                  pieceCount = 0;
+                }
+                if (pieceCount >= 4) {
+                  this.setState({ winner: piece });
+                }
+              }
+            }
+            // if top piece is at least 4 columns from right...
+            if (k <= 3) {
+              pieceCount = 1;
+              level = n;
+              steps = 0;
+              // check rightward
+              while (level > 0) {
+                level--;
+                steps++;
+                if (k <= 3 && playsObj[k + steps][level] === piece) {
+                  pieceCount++;
+                } else {
+                  pieceCount = 0;
+                }
+                if (pieceCount >= 4) {
+                  this.setState({ winner: piece });
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 };
 
