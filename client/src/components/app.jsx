@@ -34,13 +34,27 @@ class App extends React.Component {
   checkForWin(player1, column) {
     const piece = player1 ? 'X': 'O';
     let pieceCount;
-    let win = false;
-    //check columns
     const playsArray = Object.create(this.state.currentPlays);
+    //check columns
     pieceCount = 0;
     for (let i = 0; i < playsArray[column].length; i++) {
       if (playsArray[column][i] === piece) {
         pieceCount++
+      } else {
+        pieceCount = 0;
+      }
+      if (pieceCount >= 4) {
+        alert(`Player ${piece} wins!`);
+      }
+    }
+    //check rows
+    pieceCount = 0;
+    const row = playsArray[column].length - 1;
+    console.log('row', row);
+    for (let j = 0; j < 7; j++) {
+      console.log(j, playsArray[column][row], pieceCount);
+      if (playsArray[j][row] && playsArray[j][row] === piece) {
+        pieceCount++;
       } else {
         pieceCount = 0;
       }
