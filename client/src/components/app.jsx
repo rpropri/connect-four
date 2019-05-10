@@ -16,9 +16,9 @@ class App extends React.Component {
       }
     };
     this.playPiece = this.playPiece.bind(this);
+    this.checkForWin = this.checkForWin.bind(this);
   }
   render() {
-    console.log('state', this.state);
     return (
       <Board playPiece={this.playPiece} columns={this.state.currentPlays}/>
     )
@@ -27,10 +27,27 @@ class App extends React.Component {
     const column = e.target.attributes.x.value;
     const playsArray = Object.create(this.state.currentPlays);
     const player1 = this.state.player1;
-    console.log('playsArray[column] ', column);
     playsArray[column].push(player1 ? 'X' : 'O');
     this.setState({currentPlays: playsArray, player1: !player1});
-    // console.log('state', this.state.currentPlays);
+    this.checkForWin(player1, column);
+  }
+  checkForWin(player1, column) {
+    const piece = player1 ? 'X': 'O';
+    let pieceCount;
+    let win = false;
+    //check columns
+    const playsArray = Object.create(this.state.currentPlays);
+    pieceCount = 0;
+    for (let i = 0; i < playsArray[column].length; i++) {
+      if (playsArray[column][i] === piece) {
+        pieceCount++
+      } else {
+        pieceCount = 0;
+      }
+      if (pieceCount >= 4) {
+        alert(`Player ${piece} wins!`);
+      }
+    }
   }
 };
 
