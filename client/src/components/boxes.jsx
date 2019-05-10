@@ -1,6 +1,6 @@
-const Box = ({x, y}) => {
+const Box = ({x, y, value}) => {
   return (
-    <div className="box" x={x} y={y}></div>
+    <div className="box" x={x} y={y}>{value ? value: ''}</div>
   )
 };
 

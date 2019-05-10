@@ -5,18 +5,32 @@ class App extends React.Component {
     super(props);
     this.state = {
       player1: true,
-      currentPlays: Array(7).fill(Array(6).fill(null))
+      currentPlays: {
+        0: [],
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+        6: []
+      }
     };
     this.playPiece = this.playPiece.bind(this);
   }
   render() {
     console.log('state', this.state);
     return (
-      <Board playPiece={this.playPiece}/>
+      <Board playPiece={this.playPiece} columns={this.state.currentPlays}/>
     )
   }
   playPiece(e) {
-    console.log('event ', e.target);
+    const column = e.target.attributes.x.value;
+    const playsArray = Object.create(this.state.currentPlays);
+    const player1 = this.state.player1;
+    console.log('playsArray[column] ', column);
+    playsArray[column].push(player1 ? 'X' : 'O');
+    this.setState({currentPlays: playsArray, player1: !player1});
+    // console.log('state', this.state.currentPlays);
   }
 };
 
